@@ -13,6 +13,7 @@ MyTcpServer::~MyTcpServer()
 
 MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent){
     mTcpServer = new QTcpServer(this);
+    db = database::getInstance();
     // mfunctionsforserver = new functionsforserver();
 
     connect(mTcpServer, &QTcpServer::newConnection,
@@ -27,34 +28,44 @@ MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent){
 }
 
 void MyTcpServer::slotNewConnection(){
- //   if(server_status==1){
-        mTcpSocket = mTcpServer->nextPendingConnection();
-        mTcpSocket->write("Hello, World!!! I am echo server!\r\n");
-        connect(mTcpSocket, &QTcpSocket::readyRead,this,&MyTcpServer::slotServerRead);
-        connect(mTcpSocket,&QTcpSocket::disconnected,this,&MyTcpServer::slotClientDisconnected);
-   // }
+    mTcpSocket = mTcpServer->nextPendingConnection();
+    int socketDescriptor = mTcpSocket->socketDescriptor();
+    mSocketDescriptors[socketDescriptor] = mTcpSocket;
+    mTcpSocket->write("Hello, World!!! I am echo server!\r\n");
+    connect(mTcpSocket, &QTcpSocket::readyRead,this,&MyTcpServer::slotServerRead);
+    connect(mTcpSocket,&QTcpSocket::disconnected,this,&MyTcpServer::slotClientDisconnected);
 }
 
 void MyTcpServer::slotServerRead(){
+    QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
+    if (!socket) {
+        return;
+    }
+
     QString res = "";
-    while(mTcpSocket->bytesAvailable()>0)
+    while(socket->bytesAvailable()>0)
     {
-        QByteArray array =mTcpSocket->readAll();
+        QByteArray array =socket->readAll();
         qDebug()<<array<<"\n";
         if(array=="\x01")
         {
             // mTcpSocket->write(parsing(QString(res.toUtf8())));
-             mTcpSocket->write(res.toUtf8());
+            socket->write(res.toUtf8());
             res = "";
         }
         else
             res.append(array);
     }
-    mTcpSocket->write(parsing(QString(res.toUtf8())));
-    //mTcpSocket->write(res.toUtf8());
-
+    socket->write(parsing(socket->socketDescriptor(), QString(res.toUtf8())));
 }
 
 void MyTcpServer::slotClientDisconnected(){
-    mTcpSocket->close();
+    QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
+    if (socket) {
+        int socketDescriptor = mSocketDescriptors.key(socket);
+        mSocketDescriptors.remove(socketDescriptor);
+        socket->close();
+        qDebug() << socketDescriptor;
+        db->sendQuerry("UPDATE user_info set id_conn = NULL where id_conn = ?", {socketDescriptor});
+    }
 }

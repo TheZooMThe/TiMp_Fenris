@@ -25,6 +25,9 @@ private:
     // functionsforserver* mfunctionsforserver;
     QTcpSocket * mTcpSocket;
     //int server_status;
+    database* db;
+
+    QMap<int, QTcpSocket*> mSocketDescriptors;
 };
 #endif // MYTCPSERVER_H
 
