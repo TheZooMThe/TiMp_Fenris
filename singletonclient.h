@@ -39,7 +39,8 @@ protected:
 public:
     static SingletonClient* getInstance();
 
-    void send_msg_to_server(QString query);
+    void send_msg_to_server(QString log, QString pass);
+    void send_msg_to_server_reg(QString log, QString pass, QString email);
 signals:
     void message_from_server(QString msg);
 private slots:
