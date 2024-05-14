@@ -1,4 +1,4 @@
-#include "functionsforserver.h"
+    #include "functionsforserver.h"
 #include <database.h>
 
 /*
@@ -22,7 +22,7 @@ int hash_func_name(const QString& func_name) {
 // добавить сокет дескрипшн
 QByteArray auth(int sockDescr, QString log, QString pass) {
     if((log == "") || (pass == "")) {
-        return "Empty data\r\n";
+        return "auth-";
     }
 
     database *db = database::getInstance();
@@ -30,7 +30,7 @@ QByteArray auth(int sockDescr, QString log, QString pass) {
     // Проверка на существование пользователя
     QByteArray result = db->sendQuerry("SELECT * FROM user_info WHERE login = ?", {log});
     if (result.isEmpty()) {
-        return "user not found\r\n";
+        return "auth-";
     }
 
     // Хэширование пароля
@@ -41,7 +41,7 @@ QByteArray auth(int sockDescr, QString log, QString pass) {
     // Проверка пароля на совпадение
     result = db->sendQuerry("SELECT * FROM user_info WHERE login = ? AND pass = ?", {log, hashedPass});
     if (result.isEmpty()) {
-        return "invalid password\r\n";
+        return "auth-";
     }
 
     qDebug() << log << " " << pass;
@@ -51,12 +51,12 @@ QByteArray auth(int sockDescr, QString log, QString pass) {
         {sockDescr, log}
         );
 
-    return "auth completed\r\n";
+    return ("auth+&" + log).toUtf8();
 }
 
 QByteArray reg(QString log, QString pass, QString mail) {
     if((log == "") || (pass == "") || (mail == "")) {
-        return "Empty data\r\n";
+        return "reg-";
     }
 
     database *db = database::getInstance();
@@ -69,7 +69,7 @@ QByteArray reg(QString log, QString pass, QString mail) {
         );
 
     if (!result.isEmpty()) {
-        return "user already exists\r\n";
+        return "reg-";
     }
 
     QCryptographicHash hash(QCryptographicHash::Sha384);
@@ -81,7 +81,7 @@ QByteArray reg(QString log, QString pass, QString mail) {
         {log, hashedPass, mail}
         );
 
-    return "reg completed\r\n";
+    return ("reg+&" + log).toUtf8();
 }
 
 QByteArray stat(int socketDescr) {
@@ -98,7 +98,7 @@ QByteArray parsing(int socketDescr, QString data_from_client) {
     QStringList data_from_client_list = data_from_client.split(QLatin1Char('&'));
 
     if (data_from_client_list.size() < 2) {
-        return "error\r\n";
+        return "error";
     }
 
     QString func_name = data_from_client_list.first();
@@ -107,32 +107,32 @@ QByteArray parsing(int socketDescr, QString data_from_client) {
     switch (hash_func_name(func_name)) {
     case 0: // auth
         if (data_from_client_list.size()!= 2) {
-            return "error\r\n";
+            return "auth-";
         }
         return auth(socketDescr,data_from_client_list.at(0), data_from_client_list.at(1).trimmed());
 
     case 1: // reg
         if (data_from_client_list.size()!= 3) {
-            return "error\r\n";
+            return "reg-";
         }
         return reg(data_from_client_list.at(0), data_from_client_list.at(1), data_from_client_list.at(2).trimmed());
 
     case 2: // stat
         if (data_from_client_list.size() != 0) {
-            return "error\r\n";
+            return "error";
         }
 
         return stat(socketDescr);
 
     case 3: // check
         if (data_from_client_list.size() != 2) {
-            return "error\r\n";
+            return "error";
         }
 
         return check(socketDescr, data_from_client_list.at(0), data_from_client_list.at(1).trimmed());
 
     default:
-        return "There is no command with that syntax\r\n";
+        return "There is no command with that syntax";
     }
 }
 

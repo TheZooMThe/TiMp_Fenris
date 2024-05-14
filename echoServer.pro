@@ -21,6 +21,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     database.cpp \
     functionsforserver.cpp \
+    hashalgorithm.cpp \
     main.cpp \
     mytcpserver.cpp
 
@@ -32,4 +33,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     database.h \
     functionsforserver.h \
+    hashalgorithm.h \
     mytcpserver.h
