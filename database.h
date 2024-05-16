@@ -10,6 +10,7 @@
 #include <QSqlRecord>
 #include <QSqlError>
 #include <QVariant>
+#include <QCryptographicHash>
 
 class database;
 
@@ -28,27 +29,20 @@ private:
     static database *p_instance;
     static databaseDestroyer destroyer;
     QSqlDatabase db;
+    QStringList sendQuerry(const QString& text,const QVariantList& queryParams);
 protected:
-    database() {
-        db = QSqlDatabase::addDatabase("QSQLITE");
-        db.setDatabaseName("C:\\works\\TiMp_Fenris\\sqlite.db");
-        if (!db.open()) {
-            qDebug() << "Error opening database: " << db.lastError().text();
-        }
-    }
+    database();
     database(const database &);
     database &operator=(const database &);
     ~database() {}
     friend class databaseDestroyer;
 public:
-    static database *getInstance() {
-        if (!p_instance) {
-            p_instance = new database();
-            destroyer.initialize(p_instance);
-        }
-        return p_instance;
-    }
-    QByteArray sendQuerry(const QString& text,const QVariantList& queryParams);
+    static database *getInstance();
+    QByteArray reg(QString log, QString pass, QString mail);
+    QByteArray auth(int sockDescr, QString log, QString pass);
+    QByteArray stat(int socketDescr, QString log);
+    bool userDisconnect(int sockDescr);
+    bool isUserCorrect(QString log, int socketDescr);
 };
 
 #endif // DATABASE_H

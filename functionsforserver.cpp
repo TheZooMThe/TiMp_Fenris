@@ -1,15 +1,5 @@
-    #include "functionsforserver.h"
+#include "functionsforserver.h"
 #include <database.h>
-
-/*
-create table user_info(login varchar(20) NOT NULL,
-                      pass varchar(64) NOT NULL,
-                      mail varchar(64) NOT NULL,
-                      stat_task1 int NOT NULL,
-                      stat_task2 int NOT NULL,
-                      id_conn int)
-
-*/
 
 int hash_func_name(const QString& func_name) {
     if (func_name == "auth") return 0;
@@ -20,38 +10,13 @@ int hash_func_name(const QString& func_name) {
 }
 
 // добавить сокет дескрипшн
-QByteArray auth(int sockDescr, QString log, QString pass) {
+QByteArray auth(int socketDescr, QString log, QString pass) {
     if((log == "") || (pass == "")) {
         return "auth-";
     }
 
     database *db = database::getInstance();
-
-    // Проверка на существование пользователя
-    QByteArray result = db->sendQuerry("SELECT * FROM user_info WHERE login = ?", {log});
-    if (result.isEmpty()) {
-        return "auth-";
-    }
-
-    // Хэширование пароля
-    QCryptographicHash hash(QCryptographicHash::Sha384);
-    hash.addData(pass.toUtf8());
-    QByteArray hashedPass = hash.result();
-
-    // Проверка пароля на совпадение
-    result = db->sendQuerry("SELECT * FROM user_info WHERE login = ? AND pass = ?", {log, hashedPass});
-    if (result.isEmpty()) {
-        return "auth-";
-    }
-
-    qDebug() << log << " " << pass;
-
-    db->sendQuerry(
-        "UPDATE user_info set id_conn = ? where login = ?",
-        {sockDescr, log}
-        );
-
-    return ("auth+&" + log).toUtf8();
+    return db -> auth(socketDescr, log, pass);
 }
 
 QByteArray reg(QString log, QString pass, QString mail) {
@@ -60,37 +25,28 @@ QByteArray reg(QString log, QString pass, QString mail) {
     }
 
     database *db = database::getInstance();
+    return db ->reg(log, pass, mail);
+}
 
-    qDebug() << log << " " << pass << " " << mail;
+QByteArray stat(int socketDescr, QString log) {
+    database *db = database::getInstance();
 
-    QByteArray result = db->sendQuerry(
-        "SELECT * FROM user_info WHERE login = ?",
-        {log}
-        );
-
-    if (!result.isEmpty()) {
-        return "reg-";
+    if (!db->isUserCorrect(log, socketDescr)) {
+        return "stat-";
     }
 
-    QCryptographicHash hash(QCryptographicHash::Sha384);
-    hash.addData(pass.toUtf8());
-    QByteArray hashedPass = hash.result();
-
-    db->sendQuerry(
-        "INSERT INTO user_info (login,pass,mail,stat_task1,stat_task2,id_conn) VALUES (?, ?, ?, 0, 0, NULL) ",
-        {log, hashedPass, mail}
-        );
-
-    return ("reg+&" + log).toUtf8();
+    return db -> stat(socketDescr, log);
 }
 
-QByteArray stat(int socketDescr) {
 
-    return "topstatistic\r\n";
-}
 QByteArray check(int socketDescr, QString var, QString userAnsw) {
 
     return "check\r\n";
+}
+
+bool userDisconnect(int socketDescr) {
+    database *db = database::getInstance();
+    return db ->userDisconnect(socketDescr);
 }
 
 QByteArray parsing(int socketDescr, QString data_from_client) {
@@ -118,11 +74,11 @@ QByteArray parsing(int socketDescr, QString data_from_client) {
         return reg(data_from_client_list.at(0), data_from_client_list.at(1), data_from_client_list.at(2).trimmed());
 
     case 2: // stat
-        if (data_from_client_list.size() != 0) {
+        if (data_from_client_list.size() != 1) {
             return "error";
         }
 
-        return stat(socketDescr);
+        return stat(socketDescr, data_from_client_list.at(0).trimmed());
 
     case 3: // check
         if (data_from_client_list.size() != 2) {
@@ -135,4 +91,7 @@ QByteArray parsing(int socketDescr, QString data_from_client) {
         return "There is no command with that syntax";
     }
 }
+
+
+
 

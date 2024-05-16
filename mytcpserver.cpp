@@ -13,8 +13,6 @@ MyTcpServer::~MyTcpServer()
 
 MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent){
     mTcpServer = new QTcpServer(this);
-    db = database::getInstance();
-    // mfunctionsforserver = new functionsforserver();
 
     connect(mTcpServer, &QTcpServer::newConnection,
             this, &MyTcpServer::slotNewConnection);
@@ -66,6 +64,7 @@ void MyTcpServer::slotClientDisconnected(){
         mSocketDescriptors.remove(socketDescriptor);
         socket->close();
         qDebug() << socketDescriptor;
-        db->sendQuerry("UPDATE user_info set id_conn = NULL where id_conn = ?", {socketDescriptor});
+        // qDebug() << stat(880, "Artem");
+        userDisconnect(socketDescriptor);
     }
 }

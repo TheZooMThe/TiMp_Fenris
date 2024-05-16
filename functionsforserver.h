@@ -7,9 +7,11 @@
 
 
    QByteArray reg(QString log, QString pass, QString mail);
-   QByteArray auth(int sockDescr, QString log, QString pass);
+   QByteArray auth(int socketDescr, QString log, QString pass);
    QByteArray parsing(int socketDescr, QString data_from_client);
-   QByteArray stat(int socketDescr);
+   QByteArray stat(int socketDescr, QString login);
    QByteArray check(int socketDescr, QString var, QString userAnsw);
+   bool userDisconnect(int socketDescr);
+
 
 #endif // FUNCTIONSFORSERVER_H
