@@ -11,6 +11,7 @@
 #include <QSqlError>
 #include <QVariant>
 #include <QCryptographicHash>
+#include <sha384.h>
 
 class database;
 

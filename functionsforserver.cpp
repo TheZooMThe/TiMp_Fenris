@@ -50,6 +50,8 @@ bool userDisconnect(int socketDescr) {
 }
 
 QByteArray parsing(int socketDescr, QString data_from_client) {
+    SHA384 a;
+    qDebug() << a.hash("damko");
     // NameOfFunc&Param1&Param2&Param3 to NameOfFunc(param1,param2,param3)
     QStringList data_from_client_list = data_from_client.split(QLatin1Char('&'));
 

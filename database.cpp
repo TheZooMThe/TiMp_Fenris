@@ -1,4 +1,5 @@
 #include "database.h"
+#include "sha384.h"
 
 /*
 create table user_info(login varchar(20) NOT NULL,
@@ -77,9 +78,12 @@ QByteArray database::reg(QString log, QString pass, QString mail) {
         return "reg-";
     }
 
-    QCryptographicHash hash(QCryptographicHash::Sha384);
-    hash.addData(pass.toUtf8());
-    QByteArray hashedPass = hash.result();
+    //QCryptographicHash hash(QCryptographicHash::Sha384);
+    //hash.addData(pass.toUtf8());
+    //QByteArray hashedPass = hash.result();
+
+    SHA384 hasher;
+    QByteArray hashedPass = hasher.hash(pass.toUtf8());
 
     p_instance->sendQuerry(
         "INSERT INTO user_info (login,pass,mail,stat_task1,stat_task2,id_conn) VALUES (?, ?, ?, 0, 0, NULL) ",
@@ -98,10 +102,19 @@ QByteArray database::auth(int socketDescr, QString log, QString pass) {
         return "auth-";
     }
 
+
+
+
     // Хэширование пароля
-    QCryptographicHash hash(QCryptographicHash::Sha384);
-    hash.addData(pass.toUtf8());
-    QByteArray hashedPass = hash.result();
+    //QCryptographicHash hash(QCryptographicHash::Sha384);
+    //hash.addData(pass.toUtf8());
+    //QByteArray hashedPass = hash.result();
+
+    SHA384 hasher;
+    QByteArray hashedPass = hasher.hash(pass.toUtf8());
+
+    //qDebug() << hashedPass.toHex() << "\n" << hashedPass2;
+
 
     // Проверка пароля на совпадение
     result = p_instance->sendQuerry("SELECT * FROM user_info WHERE login = ? AND pass = ?", {log, hashedPass});

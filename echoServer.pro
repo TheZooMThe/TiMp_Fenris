@@ -21,9 +21,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     database.cpp \
     functionsforserver.cpp \
-    hashalgorithm.cpp \
     main.cpp \
-    mytcpserver.cpp
+    mytcpserver.cpp \
+    sha384.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -33,5 +33,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     database.h \
     functionsforserver.h \
-    hashalgorithm.h \
-    mytcpserver.h
+    mytcpserver.h \
+    sha384.h
