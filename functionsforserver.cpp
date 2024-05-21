@@ -15,8 +15,11 @@ QByteArray auth(int socketDescr, QString log, QString pass) {
         return "auth-";
     }
 
+    SHA384 hasher;
+    QByteArray hashedPass = hasher.hash(pass.toUtf8());
+
     database *db = database::getInstance();
-    return db -> auth(socketDescr, log, pass);
+    return db -> auth(socketDescr, log, hashedPass);
 }
 
 QByteArray reg(QString log, QString pass, QString mail) {
@@ -24,8 +27,11 @@ QByteArray reg(QString log, QString pass, QString mail) {
         return "reg-";
     }
 
+    SHA384 hasher;
+    QByteArray hashedPass = hasher.hash(pass.toUtf8());
+
     database *db = database::getInstance();
-    return db ->reg(log, pass, mail);
+    return db ->reg(log, hashedPass, mail);
 }
 
 QByteArray stat(int socketDescr, QString log) {

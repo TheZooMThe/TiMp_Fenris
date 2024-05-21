@@ -53,7 +53,7 @@ private:
     QByteArray digest(uint64* h);
     void freeBuffer(uint64** buffer, quint64 nBuffer);
 
-    // Операции12
+    // Операции
 #define Ch(x,y,z) ((x&y)^(~x&z))
 #define Maj(x,y,z) ((x&y)^(x&z)^(y&z))
 #define RotR(x, n) ((x>>n)|(x<<((sizeof(x)<<3)-n)))

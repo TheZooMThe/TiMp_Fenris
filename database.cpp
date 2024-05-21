@@ -66,13 +66,10 @@ bool database::isUserCorrect(QString log, int socketDescr) {
     return !p_instance -> sendQuerry("SELECT 1 FROM user_info WHERE login = ? AND id_conn = ?", {log, socketDescr}).isEmpty();
 }
 
-QByteArray database::reg(QString log, QString pass, QString mail) {
-    qDebug() << log << " " << pass << " " << mail;
+QByteArray database::reg(QString log, QString hashedPass, QString mail) {
+    // qDebug() << log << " " << pass << " " << mail;
 
-    QStringList result = p_instance->sendQuerry(
-        "SELECT * FROM user_info WHERE login = ?",
-        {log}
-        );
+    QStringList result = p_instance->sendQuerry("SELECT * FROM user_info WHERE login = ?", {log});
 
     if (!result.isEmpty()) {
         return "reg-";
@@ -80,21 +77,16 @@ QByteArray database::reg(QString log, QString pass, QString mail) {
 
     //QCryptographicHash hash(QCryptographicHash::Sha384);
     //hash.addData(pass.toUtf8());
-    //QByteArray hashedPass = hash.result();
-
-    SHA384 hasher;
-    QByteArray hashedPass = hasher.hash(pass.toUtf8());
+    //QByteArray hashedPass = hash.result(); - использовалось для сравнения результатов хеширования
 
     p_instance->sendQuerry(
         "INSERT INTO user_info (login,pass,mail,stat_task1,stat_task2,id_conn) VALUES (?, ?, ?, 0, 0, NULL) ",
-        {log, hashedPass, mail}
-        );
+        {log, hashedPass.toUtf8(), mail});
 
     return ("reg+&" + log).toUtf8();
-
-
 }
-QByteArray database::auth(int socketDescr, QString log, QString pass) {
+
+QByteArray database::auth(int socketDescr, QString log, QString hashedPass) {
 
     // Проверка на существование пользователя
     QStringList result = p_instance->sendQuerry("SELECT * FROM user_info WHERE login = ?", {log});
@@ -102,27 +94,15 @@ QByteArray database::auth(int socketDescr, QString log, QString pass) {
         return "auth-";
     }
 
-
-
-
-    // Хэширование пароля
     //QCryptographicHash hash(QCryptographicHash::Sha384);
     //hash.addData(pass.toUtf8());
     //QByteArray hashedPass = hash.result();
 
-    SHA384 hasher;
-    QByteArray hashedPass = hasher.hash(pass.toUtf8());
-
-    //qDebug() << hashedPass.toHex() << "\n" << hashedPass2;
-
-
     // Проверка пароля на совпадение
-    result = p_instance->sendQuerry("SELECT * FROM user_info WHERE login = ? AND pass = ?", {log, hashedPass});
+    result = p_instance->sendQuerry("SELECT * FROM user_info WHERE login = ? AND pass = ?", {log, hashedPass.toUtf8()});
     if (result.isEmpty()) {
         return "auth-";
     }
-
-    qDebug() << log << " " << pass;
 
     p_instance->sendQuerry(
         "UPDATE user_info set id_conn = ? where login = ?",
