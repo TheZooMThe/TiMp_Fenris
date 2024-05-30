@@ -6,15 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>600</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(108, 108, 108);</string>
+   <string notr="true">
+background-color: rgb(248, 255, 243);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="verticalLayoutWidget">
@@ -22,27 +23,28 @@
      <rect>
       <x>30</x>
       <y>50</y>
-      <width>160</width>
-      <height>285</height>
+      <width>190</width>
+      <height>261</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QPushButton" name="pushButton_Task_1">
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(112, 41, 255);
+        <string notr="true">background-color: rgb(255, 94, 83);
 color: rgb(255, 255, 255);
 font: 9pt &quot;Segoe Print&quot;;</string>
        </property>
        <property name="text">
-        <string>Task 1</string>
+        <string>Task 1 - Chord Method</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_Task_2">
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(112, 41, 255);
+        <string notr="true">
+background-color: rgb(255, 94, 83);
 color: rgb(255, 255, 255);
 font: 9pt &quot;Segoe Print&quot;;</string>
        </property>
@@ -52,9 +54,22 @@ font: 9pt &quot;Segoe Print&quot;;</string>
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="pushButton_Task_3">
+       <property name="styleSheet">
+        <string notr="true">
+background-color: rgb(255, 94, 83);
+color: rgb(255, 255, 255);
+font: 9pt &quot;Segoe Print&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Task 3</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="pushButton_Stat">
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(112, 41, 255);
+        <string notr="true">background-color: rgb(255, 94, 83);
 color: rgb(255, 255, 255);
 font: 9pt &quot;Segoe Print&quot;;</string>
        </property>
@@ -66,7 +81,7 @@ font: 9pt &quot;Segoe Print&quot;;</string>
      <item>
       <widget class="QPushButton" name="pushButton_4">
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(112, 41, 255);
+        <string notr="true">background-color: rgb(255, 94, 83);
 font: 9pt &quot;Segoe Print&quot;;
 color: rgb(255, 255, 255);</string>
        </property>
@@ -83,7 +98,7 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>600</width>
      <height>26</height>
     </rect>
    </property>

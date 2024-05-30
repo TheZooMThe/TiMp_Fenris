@@ -21,6 +21,11 @@ public:
 private slots:
     void on_pushButton_4_clicked();
 
+    void on_pushButton_Task_1_clicked();
+    void on_pushButton_Task_2_clicked();
+    void on_pushButton_Task_3_clicked();
+    void on_pushButton_Stat_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

@@ -1,6 +1,7 @@
 #ifndef AUTHREGFORM_H
 #define AUTHREGFORM_H
 #include <QWidget>
+#include "admin.h"
 
 
 namespace Ui {
@@ -22,7 +23,12 @@ private slots:
 
     void on_pushButton_registration_clicked();
 
-    void test_function();
+    void on_pushButton_admin_clicked();
+
+    void on_pushButton_adminlogin_clicked();
+
+
+    void handleAuthResponse(const QString& response);
 
 private:
     Ui::AuthRegForm *ui;

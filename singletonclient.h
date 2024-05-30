@@ -6,8 +6,7 @@
 #include <QtNetwork>
 #include <QByteArray>
 #include <QDebug>
-
-
+#include "VigenereCipher.h"
 
 
 
@@ -30,6 +29,10 @@ private:
     static SingletonClient * p_instance;
     static SingletonDestroyer destroyer;
     QTcpSocket * mTcpSocket;
+    VigenereCipher cipher; // Добавим объект шифра Виженера
+
+
+
 protected:
     explicit SingletonClient(QObject * parent = nullptr);
     SingletonClient(const SingletonClient&) = delete;
@@ -41,10 +44,18 @@ public:
 
     void send_msg_to_server(QString log, QString pass);
     void send_msg_to_server_reg(QString log, QString pass, QString email);
+    void send_msg_to_server_adminAuth(QString log, QString pass);
+
+    void send_msg_to_server_stat(QString log);
+
+    void send_msg_to_server_check(QString task_number, QString first, QString second, QString answer);
+
+    void send_msg_to_server_total_statistic(QString log);
+
 signals:
     void message_from_server(QString msg);
 private slots:
-    void slotServerRead();
+  QString slotServerRead();
 };
 
 

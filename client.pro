@@ -11,21 +11,30 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    admin.cpp \
     authregform.cpp \
     functionsforclient.cpp \
     main.cpp \
     mainwindow.cpp \
-    singletonclient.cpp
+    singletonclient.cpp \
+    task_one.cpp \
+    vigenerecipher.cpp
 
 HEADERS += \
+    admin.h \
     authregform.h \
     functionsforclient.h \
     mainwindow.h \
-    singletonclient.h
+    singletonclient.h \
+    task_one.h \
+    user_data.h \
+    vigenerecipher.h
 
 FORMS += \
+    admin.ui \
     authregform.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    task_one.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
