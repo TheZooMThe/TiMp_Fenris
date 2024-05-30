@@ -1,7 +1,8 @@
 #include "mytcpserver.h"
 #include <QDebug>
 #include <QCoreApplication>
-#include<QString>
+#include <QString>
+#include "vigenerecipher.h"
 
 
 MyTcpServer::~MyTcpServer()
@@ -29,9 +30,10 @@ void MyTcpServer::slotNewConnection(){
     mTcpSocket = mTcpServer->nextPendingConnection();
     int socketDescriptor = mTcpSocket->socketDescriptor();
     mSocketDescriptors[socketDescriptor] = mTcpSocket;
-    mTcpSocket->write("Hello, World!!! I am echo server!\r\n");
+    // mTcpSocket->write("Hello, World!!! I am echo server!\r\n");
     connect(mTcpSocket, &QTcpSocket::readyRead,this,&MyTcpServer::slotServerRead);
     connect(mTcpSocket,&QTcpSocket::disconnected,this,&MyTcpServer::slotClientDisconnected);
+    qDebug() << socketDescriptor;
 }
 
 void MyTcpServer::slotServerRead(){
@@ -54,7 +56,9 @@ void MyTcpServer::slotServerRead(){
         else
             res.append(array);
     }
+
     socket->write(parsing(socket->socketDescriptor(), QString(res.toUtf8())));
+    // socket->write(res.toUtf8());
 }
 
 void MyTcpServer::slotClientDisconnected(){

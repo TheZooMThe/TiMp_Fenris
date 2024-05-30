@@ -11,7 +11,7 @@
 #include <QSqlError>
 #include <QVariant>
 #include <QCryptographicHash>
-#include <sha384.h>
+#include "sha384.h"
 
 class database;
 
@@ -42,8 +42,21 @@ public:
     QByteArray reg(QString log, QString pass, QString mail);
     QByteArray auth(int sockDescr, QString log, QString pass);
     QByteArray stat(int socketDescr, QString log);
+    QByteArray adminAuth(int sockDescr, QString log, QString pass);
+    bool updateTask1Ap(const QString& log);
+    bool updateTask1Try(const QString& log);
+
+    bool updateTask2Ap(const QString& log);
+    bool updateTask2Try(const QString& log);
+
+    bool updateTask3Ap(const QString& log);
+    bool updateTask3Try(const QString& log);
+
+    QString getLoginFromSocketDescr(int socketDescr);
     bool userDisconnect(int sockDescr);
     bool isUserCorrect(QString log, int socketDescr);
+    QByteArray userStatistic(const QString& log);
+    QByteArray totalStatistic(const QString& adminLogin);;
 };
 
 #endif // DATABASE_H

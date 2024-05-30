@@ -22,8 +22,10 @@ SOURCES += \
     database.cpp \
     functionsforserver.cpp \
     main.cpp \
+    methodchord.cpp \
     mytcpserver.cpp \
-    sha384.cpp
+    sha384.cpp \
+    vigenerecipher.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -33,5 +35,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     database.h \
     functionsforserver.h \
+    methodchord.h \
     mytcpserver.h \
-    sha384.h
+    sha384.h \
+    vigenerecipher.h
